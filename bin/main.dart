@@ -7,6 +7,8 @@
 
 //➞ 3
 
+import 'dart:math';
+
 int longestStreak(List<Map<String, String>> dates) {
   dates.sort((Map<String, String> date1, Map<String, String> date2) =>
       date1['date'].compareTo(date2['date']));
@@ -22,7 +24,7 @@ int longestStreak(List<Map<String, String>> dates) {
     if (diff == 1) {
       currentStreak++;
     } else {
-      currentStreak > previousStreak ? previousStreak = currentStreak : {};
+      previousStreak = max(previousStreak, currentStreak);
       currentStreak = 1;
     }
   }
@@ -51,9 +53,10 @@ List<String> getList(String word, List<String> dict, int start) {
   List<String> output = [];
   while (end != word.length) {
     if (dict.contains(word.substring(start, end + 1))) {
-      if (getList(word, dict, end + 1) != null) {
+      List<String> temp = getList(word, dict, end + 1);
+      if (temp != null) {
         output.add(word.substring(start, end + 1));
-        output.addAll(getList(word, dict, end + 1));
+        output.addAll(temp);
         return output;
       }
     }
@@ -63,8 +66,12 @@ List<String> getList(String word, List<String> dict, int start) {
 }
 
 void main() {
-  print(getList(
-      "andbedbathandbeyond", ['bed', 'bat', 'bedbat', 'bedbath', 'and', 'beyond'], 0));
+  print(getList("andbedbathandbeyond",
+      ['bed', 'bat', 'bedbat', 'bedbath', 'and', 'beyond'], 0));
+  print(getList("bedbathandbeyondeverything",
+      ['bedbath', 'bed', 'bath', 'bedbath', 'and', 'beyond'], 0));
+  print(getList("thequickbrownfoxthe",
+      ['the', 'quick', 'brown', 'fox'], 0));
 
 //  print(longestStreak([
 //    {"date": "2019-09-19"},
