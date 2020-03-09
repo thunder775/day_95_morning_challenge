@@ -4,27 +4,30 @@
 // "longest streak" (i.e. number of consecutive days in a row).
 //
 // Example
-// longestStreak([
-//   {
-//   "date": "2019-09-18"
-//   },
-//   {
-//   "date": "2019-09-19"
-//   },
-//   {
-//   "date": "2019-09-20"
-//   },
-//   {
-//   "date": "2019-09-26"
-//   },
-//   {
-//   "date": "2019-09-27"
-//   },
-//   {
-//   "date": "2019-09-30"
-//   }
-// ]) ➞ 3
 
+//➞ 3
+
+int longestStreak(List<Map<String, String>> dates) {
+  dates.sort((Map<String, String> date1, Map<String, String> date2) =>
+      date1['date'].compareTo(date2['date']));
+  int currentStreak = 1;
+  int previousStreak = 0;
+  for (int i = 0; i < dates.length; i++) {
+    int diff = 0;
+    if (i != dates.length - 1) {
+      DateTime date1 = DateTime.parse(dates[i]['date']);
+      DateTime date2 = DateTime.parse(dates[i + 1]['date']);
+      diff = date2.difference(date1).inDays;
+    }
+    if (diff == 1) {
+      currentStreak++;
+    } else {
+      currentStreak > previousStreak ? previousStreak = currentStreak : {};
+      currentStreak = 1;
+    }
+  }
+  return previousStreak;
+}
 
 // Challenge 2
 // This problem was asked by Microsoft.
@@ -40,6 +43,35 @@
 // Given the set of words 'bed', 'bath', 'bedbath', 'and', 'beyond', and the
 // string "bedbathandbeyond", return either ['bed', 'bath', 'and', 'beyond] or
 // ['bedbath', 'and', 'beyond'].
+List<String> getList(String word, List<String> dict, int start) {
+  if (start == word.length) {
+    return [];
+  }
+  int end = start;
+  List<String> output = [];
+  while (end != word.length) {
+    if (dict.contains(word.substring(start, end + 1))) {
+      if (getList(word, dict, end + 1) != null) {
+        output.add(word.substring(start, end + 1));
+        output.addAll(getList(word, dict, end + 1));
+        return output;
+      }
+    }
+    end++;
+  }
+  return null;
+}
 
 void main() {
+  print(getList(
+      "andbedbathandbeyond", ['bed', 'bat', 'bedbat', 'bedbath', 'and', 'beyond'], 0));
+
+//  print(longestStreak([
+//    {"date": "2019-09-19"},
+//    {"date": "2019-09-18"},
+//    {"date": "2019-09-20"},
+//    {"date": "2019-09-26"},
+//    {"date": "2019-09-27"},
+//    {"date": "2019-09-30"}
+//  ]));
 }
